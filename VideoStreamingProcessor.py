@@ -10,6 +10,7 @@ from http import server
 from kafka import KafkaProducer, KafkaConsumer, TopicPartition
 from kafka.errors import KafkaError, KafkaTimeoutError
 import time
+import cv2
 input_topic = 'input'
 output_topic = 'output'
 brokers = "G01-01:2181,G01-02:2181,G01-03:2181,G01-04:2181,G01-05:2181,G01-06:2181,G01-07:2181,G01-08:2181," \
@@ -92,7 +93,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
 
                     imgbuffer = image_stream.getvalue()
 
-                    producer.send(input_topic, value=imgbuffer, key=str(int(time.time() * 1000)).encode('utf-8'))
+                    producer.send(input_topic, value=cv2.imencode('.jpg', cv2img)[1].tobytes(), key=str(int(time.time() * 1000)).encode('utf-8'))
                     producer.flush()
 
                     #写入http响应
