@@ -7,14 +7,15 @@ import logging
 import socketserver
 from threading import Condition
 from http import server
-from kafka import KafkaProducer, KafkaConsumer, TopicPartition
-from kafka.errors import KafkaError, KafkaTimeoutError
+from kafka import KafkaProducer
 import time
+
 input_topic = 'input'
 output_topic = 'output'
 brokers = "G01-01:2181,G01-02:2181,G01-03:2181,G01-04:2181,G01-05:2181,G01-06:2181,G01-07:2181,G01-08:2181," \
           "G01-09:2181,G01-10:2181,G01-11:2181,G01-12:2181,G01-13:2181,G01-14:2181,G01-15:2181,G01-16:2181 "
-producer = KafkaProducer(bootstrap_servers='G01-01:9092',compression_type='gzip',batch_size=163840,buffer_memory=33554432,max_request_size=20485760)
+producer = KafkaProducer(bootstrap_servers='G01-01:9092', compression_type='gzip', batch_size=163840,
+                         buffer_memory=33554432, max_request_size=20485760)
 server_socket = socket.socket()
 # 绑定socket通信端口
 server_socket.bind(('10.244.1.12', 23333))
@@ -33,6 +34,8 @@ PAGE = """\
 </body>
 </html>
 """
+
+
 class StreamingOutput(object):
     def __init__(self):
         self.frame = None
@@ -47,6 +50,7 @@ class StreamingOutput(object):
                 self.condition.notify_all()
             self.buffer.seek(0)
         return self.buffer.write(buf)
+
 
 class StreamingHandler(server.BaseHTTPRequestHandler):
     def do_GET(self):
@@ -70,23 +74,22 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
             self.end_headers()
             try:
                 while True:
-                    #获得图片长度
+                    # 获得图片长度
                     image_len = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
                     print(image_len)
                     if not image_len:
                         break
 
                     image_stream = io.BytesIO()
-                    #读取图片
+                    # 读取图片
                     image_stream.write(connection.read(image_len))
 
                     image_stream.seek(0)
 
-
                     image = Image.open(image_stream)
                     cv2img = numpy.array(image, dtype=numpy.uint8)
 
-                    #send image stream to kafka
+                    # send image stream to kafka
                     # producer.send(input_topic, value=cv2img.tobytes(), key=str(int(time.time() * 1000)).encode('utf-8'))
                     # producer.flush()
 
@@ -95,7 +98,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     producer.send(input_topic, value=imgbuffer, key=str(int(time.time() * 1000)).encode('utf-8'))
                     producer.flush()
 
-                    #写入http响应
+                    # 写入http响应
                     self.wfile.write(b'--FRAME\r\n')
                     self.send_header('Content-Type', 'image/jpeg')
                     self.send_header('Content-Length', len(imgbuffer))
