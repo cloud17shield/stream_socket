@@ -9,6 +9,7 @@ from threading import Condition
 from http import server
 from kafka import KafkaProducer
 import time
+import cv2
 
 input_topic = 'input'
 output_topic = 'output'
