@@ -91,6 +91,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     cv2img = numpy.array(image, dtype=numpy.uint8)
 
                     # send image stream to kafka
+                    print('imgshape', cv2img.shape)
                     producer.send(input_topic, value=cv2img.tobytes(), key=str(int(time.time() * 1000)).encode('utf-8'))
                     producer.flush()
 
