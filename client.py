@@ -11,7 +11,7 @@ connection = client_socket.makefile('wb')
 try:
     # 打开摄像头
     cap = cv2.VideoCapture(0)
-    while (1):
+    while True:
         # 读取图片
         ret, frame = cap.read()
         frame = cv2.resize(frame, (400, 300), interpolation=cv2.INTER_CUBIC)

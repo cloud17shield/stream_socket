@@ -90,13 +90,13 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     cv2img = numpy.array(image, dtype=numpy.uint8)
 
                     # send image stream to kafka
-                    # producer.send(input_topic, value=cv2img.tobytes(), key=str(int(time.time() * 1000)).encode('utf-8'))
-                    # producer.flush()
+                    producer.send(input_topic, value=cv2img.tobytes(), key=str(int(time.time() * 1000)).encode('utf-8'))
+                    producer.flush()
 
                     imgbuffer = image_stream.getvalue()
 
-                    producer.send(input_topic, value=imgbuffer, key=str(int(time.time() * 1000)).encode('utf-8'))
-                    producer.flush()
+                    # producer.send(input_topic, value=imgbuffer, key=str(int(time.time() * 1000)).encode('utf-8'))
+                    # producer.flush()
 
                     # 写入http响应
                     self.wfile.write(b'--FRAME\r\n')
