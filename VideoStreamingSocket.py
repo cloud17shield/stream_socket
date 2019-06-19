@@ -88,7 +88,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     image_stream.seek(0)
 
                     image = Image.open(image_stream)
-                    cv2img = numpy.array(image, dtype=numpy.uint8)
+                    cv2img = numpy.array(image, dtype=numpy.uint8)[:, :, ::-1]
 
                     # send image stream to kafka
                     print('imgshape', cv2img.shape)
