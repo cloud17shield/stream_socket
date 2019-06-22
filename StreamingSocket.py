@@ -92,7 +92,8 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
 
                     # send image stream to kafka
                     print('imgshape', cv2img.shape)
-                    producer.send(input_topic, value=cv2.imencode('.jpg', cv2img)[1].tobytes(), key=str(int(time.time() * 1000)).encode('utf-8'))
+                    producer.send(input_topic, value=cv2.imencode('.jpg', cv2img)[1].tobytes(),
+                                  key=str(int(time.time() * 1000)).encode('utf-8'))
                     producer.flush()
 
                     imgbuffer = image_stream.getvalue()
