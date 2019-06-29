@@ -14,12 +14,12 @@ try:
     while True:
         # 读取图片
         ret, frame = cap.read()
-        frame = cv2.resize(frame, (400, 300), interpolation=cv2.INTER_CUBIC)
+        frame = cv2.resize(frame, (800, 600), interpolation=cv2.INTER_CUBIC)
         # cv2.imshow("capture", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         # 转换为jpg格式
-        img_str = cv2.imencode('.jpg', frame)[1].tobytes()
+        img_str = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])[1].tobytes()
         # 获得图片长度
         s = struct.pack('<L', len(img_str))
         # print(s)
