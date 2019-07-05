@@ -19,7 +19,7 @@ producer = KafkaProducer(bootstrap_servers='G01-01:9092', compression_type='gzip
                          buffer_memory=33554432, max_request_size=20485760)
 server_socket = socket.socket()
 # 绑定socket通信端口
-server_socket.bind(('10.244.1.12', 23333))
+server_socket.bind(('10.244.27.7', 23333))
 server_socket.listen(0)
 
 connection = server_socket.accept()[0].makefile('rb')
@@ -127,7 +127,7 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
 output = StreamingOutput()
 
 try:
-    address = ('10.244.1.12', 12345)
+    address = ('10.244.27.7', 12345)
     server = StreamingServer(address, StreamingHandler)
     server.serve_forever()
 except Exception as e:
