@@ -30,7 +30,7 @@ try:
         connection.write(img_str)
         connection.flush()
         # 限制帧数
-        time.sleep(0.08)
+        time.sleep(0.1)
 
 except Exception as e:
     print(e)
