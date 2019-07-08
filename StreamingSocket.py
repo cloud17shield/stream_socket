@@ -31,7 +31,7 @@ PAGE = """\
 </head>
 <body>
 <h1>PiCamera MJPEG Streaming Demo</h1>
-<img src="stream.mjpg" width="640" height="480" />
+
 </body>
 </html>
 """
@@ -92,22 +92,10 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
 
                     # send image stream to kafka
                     print('imgshape', cv2img.shape)
-                    producer.send(input_topic, value=cv2.imencode('.jpg', cv2img)[1].tobytes(),
-                                  key=str(int(time.time() * 1000)).encode('utf-8'))
+                    producer.send(input_topic, value=cv2.imencode('.jpg', cv2img)[1].tobytes(), key=str(int(time.time() * 1000)).encode('utf-8'))
                     producer.flush()
 
-                    imgbuffer = image_stream.getvalue()
 
-                    # producer.send(input_topic, value=imgbuffer, key=str(int(time.time() * 1000)).encode('utf-8'))
-                    # producer.flush()
-
-                    # 写入http响应
-                    self.wfile.write(b'--FRAME\r\n')
-                    self.send_header('Content-Type', 'image/jpeg')
-                    self.send_header('Content-Length', len(imgbuffer))
-                    self.end_headers()
-                    self.wfile.write(imgbuffer)
-                    self.wfile.write(b'\r\n')
 
 
             except Exception as e:
@@ -128,7 +116,7 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
 output = StreamingOutput()
 
 try:
-    address = ('10.244.1.12', 12345)
+    address = ('10.244.27.7', 12345)
     server = StreamingServer(address, StreamingHandler)
     server.serve_forever()
 except Exception as e:

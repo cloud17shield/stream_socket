@@ -19,7 +19,7 @@ try:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         # 转换为jpg格式
-        img_str = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])[1].tobytes()
+        img_str = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 75])[1].tobytes()
         # 获得图片长度
         s = struct.pack('<L', len(img_str))
         # print(s)
